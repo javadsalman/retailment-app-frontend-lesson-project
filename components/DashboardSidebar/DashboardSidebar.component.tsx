@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { PiCubeBold } from 'react-icons/pi';
 import { FaTruck } from 'react-icons/fa';
 import { BsPeopleFill, BsPersonCircle } from 'react-icons/bs';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { MdLogout } from 'react-icons/md';
 import logo from '@/public/assets/Detalista.png';
 
@@ -15,6 +15,7 @@ const DashboardSidebar = () => {
   const currentPath = usePathname().split('/')[2];
 
   console.log(currentPath, 'currentPath');
+  const router = useRouter();
 
   return (
     <div className={styles.dashboardSidebar}>
@@ -26,7 +27,7 @@ const DashboardSidebar = () => {
         </div>
         <div className={styles.sidebarMenu}>
           <ul>
-            <li className={currentPath === 'adil' ? styles.active : ''}>
+            <li className={currentPath === 'adilvalizada' ? styles.active : ''}>
               <FiLayout />
               <Link href='/dashboard/adil'>Dashboard</Link>
             </li>
@@ -69,7 +70,13 @@ const DashboardSidebar = () => {
             <BsPersonCircle />
             <Link href='/dashboard/profile'>Profile</Link>
           </li>
-          <li>
+          <li
+            onClick={() => {
+              localStorage.removeItem('user');
+              localStorage.removeItem('token');
+              router.push('/login');
+            }}
+          >
             <MdLogout />
             <span>Logout</span>
           </li>
