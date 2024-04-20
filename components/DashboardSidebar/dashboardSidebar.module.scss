@@ -1,0 +1,126 @@
+.dashboardSidebar {
+  width: 270px;
+  padding: 20px;
+  border-right: 1px solid #3c3c3c;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .logoContainer {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebarFooter {
+    ul {
+      li {
+        padding: 8px 16px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+
+        svg {
+          margin-right: 10px;
+          color: #7c7c7c;
+          font-size: 1.2rem;
+        }
+
+        &:hover {
+          background-color: #9cff1e;
+
+          a,
+          span {
+            color: black;
+          }
+
+          svg {
+            color: black;
+          }
+        }
+
+        a,
+        span {
+          color: #7c7c7c;
+          text-decoration: none;
+          font-size: 1.2rem;
+          font-weight: 500;
+          width: 100%;
+          height: 100%;
+        }
+
+        &.active {
+          background-color: #9cff1e;
+
+          a,
+          span {
+            color: black;
+          }
+
+          svg {
+            color: black;
+          }
+        }
+      }
+    }
+  }
+
+  .sidebarMenu {
+    margin-top: 30px;
+
+    ul {
+      li {
+        padding: 8px 16px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+
+        svg {
+          margin-right: 10px;
+          color: #7c7c7c;
+          font-size: 1.2rem;
+        }
+
+        &:hover {
+          background-color: #9cff1e;
+
+          a {
+            color: black;
+          }
+
+          svg {
+            color: black;
+          }
+        }
+
+        a {
+          color: #7c7c7c;
+          text-decoration: none;
+          font-size: 1.2rem;
+          font-weight: 500;
+          width: 100%;
+          height: 100%;
+        }
+
+        &.active {
+          background-color: #9cff1e;
+
+          a {
+            color: black;
+          }
+
+          svg {
+            color: black;
+          }
+        }
+      }
+    }
+  }
+}

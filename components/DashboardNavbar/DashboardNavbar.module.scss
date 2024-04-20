@@ -1,0 +1,67 @@
+@keyframes waveAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(20deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.wave {
+  animation: 1.5s infinite waveAnimation;
+}
+
+.navbar {
+  width: 100%;
+  padding: 20px;
+  border-bottom: 0.5px solid #7c7c7c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .headerLeft {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .headerText {
+      font-size: 20px;
+      font-weight: 600;
+
+      span {
+        color: #9cff1e;
+        display: inline-block;
+      }
+    }
+
+    .date {
+      color: #7c7c7c;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  .headerRight {
+    display: flex;
+    align-items: center;
+
+    .notification {
+      position: relative;
+
+      .notificationCount {
+        top: -5px;
+        right: -5px;
+        background-color: #9cff1e;
+        color: black;
+      }
+    }
+
+    .settings {
+      cursor: pointer;
+      margin-left: 30px;
+    }
+  }
+}

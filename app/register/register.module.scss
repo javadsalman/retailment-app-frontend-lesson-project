@@ -1,0 +1,45 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  .loginContainer {
+    background-color: #fff;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #7c7c7c;
+
+    .loginHeader {
+      text-align: left;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #000;
+    }
+
+    .loginForm {
+      display: flex;
+      flex-direction: column;
+
+      .required {
+        color: red;
+      }
+
+      label {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #000;
+      }
+    }
+  }
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
