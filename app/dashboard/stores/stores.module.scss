@@ -1,0 +1,35 @@
+.stores {
+  .emptyStores {
+    border: 1px solid #7c7c7c;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .emptyStoresHeader {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      svg {
+        font-size: 40px;
+        border: 1px solid #7c7c7c;
+        padding: 20px;
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        color: white;
+        margin-bottom: 5px;
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+      }
+    }
+  }
+}

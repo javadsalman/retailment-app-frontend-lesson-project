@@ -27,8 +27,6 @@ const Pricing = () => {
     loadPlans();
   }, []);
 
-  console.log(plans, 'plans');
-
   return (
     <div className={styles.pricing}>
       <Image src={logo.src} alt='logo' width={150} height={50} />

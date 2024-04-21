@@ -8,11 +8,29 @@ import Popup from 'reactjs-popup';
 const DashboardNavbar = () => {
   const date = new Date();
   const hours = date.getHours();
+  const [user, setUser] = React.useState<null | {
+    fullname: string;
+    email: string;
+    username: string;
+    id: number;
+  }>(null);
+  const loadUserFromLocalStorage = () => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      return JSON.parse(user);
+    }
+    return null;
+  };
+
+  React.useEffect(() => {
+    setUser(loadUserFromLocalStorage());
+  }, []);
+
   return (
     <div className={styles.navbar}>
       <div className={styles.headerLeft}>
         <h1 className={styles.headerText}>
-          Hello <span>Adil Valizada</span>{' '}
+          Hello <span>{user?.fullname}</span>{' '}
           <span className={styles.wave}>👋🏻</span>
         </h1>
         <div className={styles.date}>

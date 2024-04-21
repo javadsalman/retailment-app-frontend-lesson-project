@@ -1,26 +1,31 @@
+'use client';
 import DashboardNavbar from '@/components/DashboardNavbar/DashboardNavbar.component';
 import DashboardSidebar from '@/components/DashboardSidebar/DashboardSidebar.component';
 import HelpCenterBadge from '@/components/HelpCenterBadge/HelpCenterBadge';
-import type { Metadata } from 'next';
+
 import { Inter } from 'next/font/google';
+import { useEffect } from 'react';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  title: 'Detalista - Dashboard',
-  description: `
-    Detalista is a platform that allows you to create a shopping list and share it with your friends and family. 
-    You can add items to your shopping list, mark them as purchased, and share the list with your friends and family. 
-    You can also add notes to the items on your shopping list, so you can remember why you added them to the list in the first place. 
-    Detalista is a great way to stay organized and make sure you never forget anything on your shopping list again!
-  `,
-};
 
 export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const loadAccsessToken = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return token;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    if (!loadAccsessToken()) {
+      window.location.href = '/login';
+    }
+  }, []);
   return (
     <main lang='en' className='flex items-center w-screen'>
       <DashboardSidebar />

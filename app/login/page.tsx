@@ -16,6 +16,7 @@ const Login = () => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
   const navigate = useRouter();
 
   const handleChange = () => {
@@ -23,10 +24,11 @@ const Login = () => {
   };
 
   const setLocalStorage = (data: any) => {
+    if (!data) return;
     localStorage.setItem(
       'user',
       JSON.stringify({
-        fullname: data.firstname + ' ' + data.lastname,
+        fullname: data.first_name + ' ' + data.last_name,
         email: data.email,
         username: data.username,
         id: data.id,
@@ -37,6 +39,7 @@ const Login = () => {
   };
 
   const login = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}customer/customers/login/`,
@@ -46,15 +49,11 @@ const Login = () => {
         }
       );
 
-      if (response) {
-        console.log(response.data);
-
-        // setLocalStorage(response.data);
-        // navigate('/dashboard/${response.data.user}');
-      }
+      return response.data;
     } catch (error) {
       console.error(error);
       setError('Invalid username or password');
+      setLoading(false);
     }
   };
 
@@ -65,13 +64,31 @@ const Login = () => {
       return;
     }
 
-    navigate.push('/dashboard/adilvalizada');
+    // navigate.push('/dashboard/adilvalizada');
 
-    // login();
-
-    setUsername('');
-    setPassword('');
+    login().then((data) => {
+      setLocalStorage(data);
+      setUsername('');
+      setPassword('');
+      setLoading(false);
+      navigate.push(`dashboard/${data.username}`);
+    });
   };
+
+  const loadUserFromLocalStorage = () => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      return JSON.parse(user);
+    }
+    return null;
+  };
+
+  React.useEffect(() => {
+    const user = loadUserFromLocalStorage();
+    if (user) {
+      navigate.push(`dashboard/${user.username}`);
+    }
+  }, []);
 
   return (
     <div className={styles.login}>
@@ -138,9 +155,10 @@ const Login = () => {
             type='button'
             appearance='subtle'
             onClick={handleLogin}
+            disabled={loading}
             block
           >
-            <strong>Log in</strong>
+            <strong>{loading ? 'Loading...' : 'Login'}</strong>
           </Button>
         </form>
       </div>

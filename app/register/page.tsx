@@ -17,6 +17,8 @@ const Register = () => {
   const [password, setPassword] = React.useState('');
   const [name, setName] = React.useState('');
   const [surname, setSurname] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const [error, setError] = React.useState<string | null>(null);
   const navigate = useRouter();
@@ -26,10 +28,11 @@ const Register = () => {
   };
 
   const setLocalStorage = (data: any) => {
+    if (!data) return;
     localStorage.setItem(
       'user',
       JSON.stringify({
-        fullname: data.firstname + ' ' + data.lastname,
+        fullname: data.first_name + ' ' + data.last_name,
         email: data.email,
         username: data.username,
         id: data.id,
@@ -40,41 +43,63 @@ const Register = () => {
   };
 
   const register = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}customer/customers/login/`,
+        `${process.env.NEXT_PUBLIC_API_URL}customer/customers/`,
         {
-          user_info: username,
+          first_name: name,
+          last_name: surname,
+          username,
           password,
+          email,
+          birth_date: '1999-01-01',
+          gender: 'male',
+          company_name: 'Detalista',
+          address: 'Detalista',
         }
       );
 
-      if (response) {
-        console.log(response.data);
-
-        // setLocalStorage(response.data);
-        // navigate('/dashboard/${response.data.user}');
-      }
+      return response.data;
     } catch (error) {
-      console.error(error);
+      setLoading(false);
       setError('Invalid username or password');
     }
   };
 
   const handleRegister = (e: any) => {
     e.preventDefault();
-    if (!username || !password || !name || !surname) {
+    if (!username || !password || !name || !surname || !email) {
       setError('All fields are required');
       return;
     }
 
-    register();
-
-    setUsername('');
-    setPassword('');
-    setName('');
-    setSurname('');
+    register().then((data) => {
+      setLocalStorage(data);
+      setLoading(false);
+      navigate.push(`dashboard/${data.username}`);
+      setUsername('');
+      setPassword('');
+      setName('');
+      setSurname('');
+      setEmail('');
+    });
   };
+
+  const loadUserFromLocalStorage = () => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      return JSON.parse(user);
+    }
+    return null;
+  };
+
+  React.useEffect(() => {
+    const user = loadUserFromLocalStorage();
+    if (user) {
+      navigate.push(`dashboard/${user.username}`);
+    }
+  }, []);
 
   return (
     <div className={styles.login}>
@@ -87,6 +112,30 @@ const Register = () => {
       />
       <div className={styles.loginContainer}>
         <form className={styles.loginForm}>
+          <label htmlFor='email'>
+            Email
+            <span className={styles.required}>*</span>
+          </label>
+          <InputGroup
+            style={{
+              marginBottom: '15px',
+            }}
+          >
+            <Input
+              style={{
+                padding: '10px',
+              }}
+              id='email'
+              placeholder='Your Email'
+              value={email}
+              onChange={(value: string) => {
+                setEmail(value);
+              }}
+            />
+            <InputGroup.Addon>
+              <AvatarIcon />
+            </InputGroup.Addon>
+          </InputGroup>
           <label htmlFor='name'>
             Name
             <span className={styles.required}>*</span>
@@ -189,9 +238,10 @@ const Register = () => {
             type='button'
             appearance='subtle'
             onClick={handleRegister}
+            disabled={loading}
             block
           >
-            <strong>Register</strong>
+            <strong>{loading ? 'Loading...' : 'Register'}</strong>
           </Button>
         </form>
       </div>
