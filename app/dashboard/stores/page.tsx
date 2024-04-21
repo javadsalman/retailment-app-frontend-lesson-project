@@ -1,28 +1,84 @@
+'use client';
+
 import React from 'react';
 import styles from './stores.module.scss';
 import { FaStore } from 'react-icons/fa';
 import { Button } from 'rsuite';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 const Stores = () => {
+  const [stores, setStores] = React.useState([]);
+  const router = useRouter();
+  const loadAccessTokensFromLocalStorage = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return token;
+    }
+    return null;
+  };
+
+  const loadStores = async () => {
+    const token = loadAccessTokensFromLocalStorage();
+    if (!token) {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}store/stores/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  React.useEffect(() => {
+    loadStores().then((data) => {
+      if (data && data.length > 0) {
+        setStores(data);
+      }
+    });
+  }, []);
   return (
     <div className={styles.stores}>
-      <div className={styles.emptyStores}>
-        <div className={styles.emptyStoresHeader}>
-          <FaStore />
-          <h1>
-            You don't have any store yet. <br /> Add one to start managing your
-            products.
-          </h1>
+      {stores && stores.length === 0 && (
+        <div className={styles.emptyStores}>
+          <div className={styles.emptyStoresHeader}>
+            <FaStore />
+            <h1>
+              You don't have any store yet. <br /> Add one to start managing
+              your products.
+            </h1>
+          </div>
+          <Button
+            style={{
+              backgroundColor: '#9cff1e',
+              marginTop: '15px',
+            }}
+            type='button'
+            appearance='subtle'
+            onClick={() => router.push('/dashboard/stores/add')}
+          >
+            <strong>Add a new store</strong>
+          </Button>
         </div>
-        <Button
-          style={{
-            backgroundColor: '#9cff1e',
-            marginTop: '15px',
-          }}
-          type='button'
-          appearance='subtle'
-        >
-          <strong>Add a new store</strong>
-        </Button>
+      )}
+
+      <div className={styles.storesList}>
+        {stores &&
+          stores.map((store: any) => {
+            return (
+              <div key={store.id} className={styles.store}>
+                <h1>{store.title}</h1>
+                <p>{store.address}</p>
+              </div>
+            );
+          })}
       </div>
     </div>
   );
