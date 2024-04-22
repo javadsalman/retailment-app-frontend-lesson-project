@@ -1,12 +1,71 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FaStore } from 'react-icons/fa';
 import { IoArrowBackOutline } from 'react-icons/io5';
-import { Button, Input, InputGroup } from 'rsuite';
+import { Button, Input, InputGroup, SelectPicker } from 'rsuite';
+import { loadAccessTokensFromLocalStorage } from '@/src/utils/authentication';
+import axios from 'axios';
+import { ItemDataType } from 'rsuite/esm/MultiCascadeTree';
+
+interface ICategory {
+  id: number;
+  title: string;
+  updated: string;
+  created: string;
+}
 
 const AddEmployee = () => {
   const router = useRouter();
+  const [categories, setCategories] = React.useState<ICategory[]>([]);
+  const [fullName, setFullName] = React.useState('');
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [category, setCategory] = React.useState<number|null>(null);
+  const [salary, setSalary] = React.useState('');
+  const [salaryDay, setSalaryDay] = React.useState('');
+
+  const addEmployee = () => {
+    const token = loadAccessTokensFromLocalStorage();
+    if (!fullName || !phoneNumber || !category || !salary) {
+      window.alert('Please fill all fields');
+      return;
+    }
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_URL}employee/employees/`,
+        {
+          full_name: fullName,
+          phone: phoneNumber,
+          category: category,
+          salary: salary,
+          salary_day: salaryDay,
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        router.back();
+      });
+  }
+
+  React.useEffect(() => {
+    const token = loadAccessTokensFromLocalStorage();
+    if (!token) {
+      return;
+    }
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}employee/employee_categories/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      })
+      .then((response) => {
+        setCategories(response.data as ICategory[]);
+      });
+  }, []);
 
   const backToBefore = () => {
     router.back();
@@ -38,6 +97,8 @@ const AddEmployee = () => {
           }}
           id='storeaddress'
           placeholder='Enter full name'
+          value={fullName}
+          onChange={(value) => setFullName(value)}
         />
         <label className='mb-3 mt-3 inline-block' htmlFor='storename'>
           Phone Number
@@ -48,17 +109,48 @@ const AddEmployee = () => {
           }}
           id='storename'
           placeholder='Enter phone number'
+          value={phoneNumber}
+          onChange={(value) => setPhoneNumber(value)}
         />
-
+        <div>
+          <label className='mb-3 mt-3 inline-block' htmlFor='storename'>
+            Category
+          </label>
+          <SelectPicker
+            data={categories.map((category) => ({label: category.title, value: category.id} as ItemDataType))}
+            style={{
+              width: '100%',
+              height: 51,
+            }}
+            id='storename'
+            placeholder='Select a category'
+            value={category}
+            onChange={(value) => setCategory(Number(value))}
+          />
+        </div>
         <label className='mb-3 mt-3 inline-block' htmlFor='storeaddress'>
-          Sallary
+          Salary
         </label>
         <Input
           style={{
             padding: '15px',
           }}
           id='storeaddress'
-          placeholder='Enter sallary'
+          placeholder='Enter salary'
+          value={salary}
+          onChange={(value) => setSalary(value)}
+        />
+        <label className='mb-3 mt-3 inline-block' htmlFor='storeaddress'>
+          Salary Day
+        </label>
+        <Input
+          style={{
+            padding: '15px',
+          }}
+          id='storeaddress'
+          placeholder='Enter Salary Day'
+          value={salaryDay}
+          onChange={(value) => setSalaryDay(value)}
         />
 
         <Button
@@ -69,6 +161,7 @@ const AddEmployee = () => {
           }}
           type='button'
           appearance='subtle'
+          onClick={addEmployee}
         >
           <strong>Add a new employee</strong>
         </Button>

@@ -1,16 +1,40 @@
 'use client';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FaStore } from 'react-icons/fa';
 import { IoArrowBackOutline } from 'react-icons/io5';
 import { Button, Input, InputGroup } from 'rsuite';
+import { loadAccessTokensFromLocalStorage } from '@/src/utils/authentication';
 
 const AddStore = () => {
   const router = useRouter();
+  const [storeName, setStoreName] = React.useState('');
+  const [storeAddress, setStoreAddress] = React.useState('');
 
   const backToBefore = () => {
     router.back();
   };
+
+  const addStore = useCallback(() => {
+    const token = loadAccessTokensFromLocalStorage();
+    if (!storeName || !storeAddress) {
+      window.alert('Please fill all fields');
+      return;
+    }
+    axios.post(`${process.env.NEXT_PUBLIC_API_URL}store/stores/`, {
+      title: storeName,
+      address: storeAddress,
+    },
+    {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    }).then((response) => {
+      backToBefore();
+    })
+  }, [storeName, storeAddress])
+  
   return (
     <div>
       <div className='mb-10 flex items-center'>
@@ -38,6 +62,8 @@ const AddStore = () => {
           }}
           id='storename'
           placeholder='Enter store name'
+          value={storeName}
+          onChange={(value) => setStoreName(value)}
         />
 
         <label className='mb-3 mt-3 inline-block' htmlFor='storeaddress'>
@@ -49,6 +75,8 @@ const AddStore = () => {
           }}
           id='storeaddress'
           placeholder='Enter store address'
+          value={storeAddress}
+          onChange={(value) => setStoreAddress(value)}
         />
 
         <Button
@@ -59,6 +87,7 @@ const AddStore = () => {
           }}
           type='button'
           appearance='subtle'
+          onClick={addStore}
         >
           <strong>Add a new store</strong>
         </Button>

@@ -32,4 +32,16 @@
       }
     }
   }
+  .employeeTitle {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .employee {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background-color: #9cff1e;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+  }
 }

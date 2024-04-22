@@ -32,4 +32,16 @@
       }
     }
   }
+  .storeTitle {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+  }
+  .store {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+    background-color: #9cff1e;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+  }
 }

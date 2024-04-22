@@ -6,17 +6,13 @@ import { FaStore } from 'react-icons/fa';
 import { Button } from 'rsuite';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { loadAccessTokensFromLocalStorage } from '@/src/utils/authentication';
+
+
 const Stores = () => {
   const [stores, setStores] = React.useState([]);
   const router = useRouter();
-  const loadAccessTokensFromLocalStorage = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      return token;
-    }
-    return null;
-  };
-
+  
   const loadStores = async () => {
     const token = loadAccessTokensFromLocalStorage();
     if (!token) {
@@ -27,7 +23,7 @@ const Stores = () => {
         `${process.env.NEXT_PUBLIC_API_URL}store/stores/`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Token ${token}`,
           },
         }
       );
@@ -70,6 +66,10 @@ const Stores = () => {
       )}
 
       <div className={styles.storesList}>
+        <div className={styles.storeTitle}>
+          <h1>Name</h1>
+          <p>Address</p>
+        </div>
         {stores &&
           stores.map((store: any) => {
             return (
